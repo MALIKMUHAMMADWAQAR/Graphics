@@ -22,7 +22,7 @@ scene.add(plane);
 //Creating sphere and adding it to Scene
 
 var sphereGeometry = new THREE.SphereGeometry(4,20,20);
-var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xFF0000});
+var sphereMaterial = new THREE.MeshLambertMaterial({color:0x75ff09});
 var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 sphere.position.set(20,4,2);
 sphere.castShadow = true;
@@ -48,17 +48,15 @@ scene.add(cube);
 const radius =2;
 const detail = 5;
 const octgeometry = new THREE.OctahedronGeometry(radius, detail);
-const octmaterial  = new THREE.MeshLambertMaterial({color:0x06fff0})
+const octmaterial  = new THREE.MeshLambertMaterial({color:0xffee06});
 const Octahedron = new THREE.Mesh(octgeometry,octmaterial);
-Octahedron.position.set(5,1,2)
+Octahedron.position.set(10,1,2)
 Octahedron.castShadow = true;
+scene.add(Octahedron);
 
-scene.add(Octahedron)
-
- cube.add(Octahedron);
-
-// sphere.add(Octahedron);
+//sphere.add(Octahedron);
 // sphere.add(cube);
+cube.add(Octahedron);
 
 var ambienLight = new THREE.AmbientLight(0x353535);
 scene.add(ambienLight)
@@ -75,20 +73,34 @@ var gui = new dat.GUI();
 gui.add(controls, 'rotationSpeed', 0.02, 0.5)
 gui.add(controls, 'bouncingSpeed', 0.04, 0.5)
 
+function resizeRendererToDisplaySize(renderer) {
+    const canvas = renderer.domElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) {
+      renderer.setSize(width, height, false);
+    }
+    return needResize;
+  }
+
 var step = 0 ;
 function renderScene(time)
 {
-  // stats.update();
-  // trackballControls.update(clock.getDelta());
 
+  if(resizeRendererToDisplaySize(renderer))
+  {
+    const canvas = renderer.domElement;
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  }
   step += controls.bouncingSpeed;
-  sphere.position.x = 20 + 10*(Math.cos(step));
   sphere.position.y = 2 + 10*Math.abs(Math.sin(step));
   time *= 0.001;
-  cube.rotation.y = time;
-  //cube.rotation.x += controls.rotationSpeed;
-  //cube.rotation.y += controls.rotationSpeed;
-  // cube.rotation.z += controls.rotationSpeed;
+
+  cube.rotation.x += controls.rotationSpeed;
+  cube.rotation.y += controls.rotationSpeed;
+
   requestAnimationFrame(renderScene);
   renderer.render(scene, camera)
 
