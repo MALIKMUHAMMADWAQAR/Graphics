@@ -1,6 +1,5 @@
 function init()
 {
-var stats = initStats();
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 var renderer = new THREE.WebGLRenderer();
@@ -34,7 +33,7 @@ scene.add(sphere);
 var cubeGeometry = new THREE.BoxGeometry(4,4,4);
 var cubeMaterial = new THREE.MeshLambertMaterial({color: 0x00008b});
 var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-cube.position.set(-15,4,0);
+cube.position.set(-10,4,0);
 cube.castShadow = true;
 
 scene.add(cube);
@@ -46,9 +45,23 @@ scene.add(cube);
 
  scene.add(spotLight);
 
+const radius =2;
+const detail = 5;
+const octgeometry = new THREE.OctahedronGeometry(radius, detail);
+const octmaterial  = new THREE.MeshLambertMaterial({color:0x06fff0})
+const Octahedron = new THREE.Mesh(octgeometry,octmaterial);
+Octahedron.position.set(5,1,2)
+Octahedron.castShadow = true;
 
- var ambienLight = new THREE.AmbientLight(0x353535);
- scene.add(ambienLight);
+scene.add(Octahedron)
+
+ cube.add(Octahedron);
+
+// sphere.add(Octahedron);
+// sphere.add(cube);
+
+var ambienLight = new THREE.AmbientLight(0x353535);
+scene.add(ambienLight)
 //setting camera position
 camera.position.set(-30,40,30);
 camera.lookAt(scene.position);
@@ -63,26 +76,26 @@ gui.add(controls, 'rotationSpeed', 0.02, 0.5)
 gui.add(controls, 'bouncingSpeed', 0.04, 0.5)
 
 var step = 0 ;
-function renderScene()
+function renderScene(time)
 {
-  stats.update();
-  trackballControls.update(clock.getDelta());
+  // stats.update();
+  // trackballControls.update(clock.getDelta());
 
   step += controls.bouncingSpeed;
   sphere.position.x = 20 + 10*(Math.cos(step));
   sphere.position.y = 2 + 10*Math.abs(Math.sin(step));
-
-  cube.rotation.x += controls.rotationSpeed;
-  cube.rotation.y += controls.rotationSpeed;
-  cube.rotation.z += controls.rotationSpeed;
+  time *= 0.001;
+  cube.rotation.y = time;
+  //cube.rotation.x += controls.rotationSpeed;
+  //cube.rotation.y += controls.rotationSpeed;
+  // cube.rotation.z += controls.rotationSpeed;
   requestAnimationFrame(renderScene);
   renderer.render(scene, camera)
 
 }
 
 document.getElementById("webgl-output").appendChild(renderer.domElement);
-var trackballControls = initTrackballControls(camera, renderer);
-var clock = new THREE.Clock();
-renderScene();
+requestAnimationFrame(renderScene);
+
 }
 //

@@ -33,15 +33,35 @@ function cubeInstances(colormaterial, xpos)
 cube =  [cubeInstances(0x32a852, 0),cubeInstances(0x0ee3c7, 2),cubeInstances(0x910ee3,-2)]
 
 
+function resizeRendererToDisplaySize(renderer) {
+    const canvas = renderer.domElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) {
+      renderer.setSize(width, height, false);
+    }
+    return needResize;
+  }
+
+  
   function render(time)
   {
     time *= 0.001;  // convert time to seconds
+
+    if (resizeRendererToDisplaySize(renderer)) {
+      const canvas = renderer.domElement;
+      camera.aspect = canvas.clientWidth / canvas.clientHeight;
+      camera.updateProjectionMatrix();
+    }
     for (let i = 0; i < 3; i++)
     {
     cube[i].rotation.x = time;
     cube[i].rotation.y = time;//These rotations are in radians. There are 2 pi radians in a circle so our cube should turn around once on each axis in about 6.28 seconds.
     cube[i].rotation.z = time;
   }
+
+
     renderer.render(scene, camera);
   requestAnimationFrame(render);//We then render the scene and request another animation frame to continue our loop.
   //Outside the loop we call requestAnimationFrame one time to start the loop.
