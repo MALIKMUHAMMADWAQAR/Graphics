@@ -46,17 +46,17 @@ scene.add(cube);
  scene.add(spotLight);
 
 const radius =2;
-const detail = 5;
+const detail = 0;
 const octgeometry = new THREE.OctahedronGeometry(radius, detail);
 const octmaterial  = new THREE.MeshLambertMaterial({color:0xffee06});
 const Octahedron = new THREE.Mesh(octgeometry,octmaterial);
 Octahedron.position.set(10,1,2)
 Octahedron.castShadow = true;
 scene.add(Octahedron);
-
 //sphere.add(Octahedron);
 // sphere.add(cube);
 cube.add(Octahedron);
+
 
 var ambienLight = new THREE.AmbientLight(0x353535);
 scene.add(ambienLight)
@@ -98,11 +98,13 @@ function renderScene(time)
   sphere.position.y = 2 + 10*Math.abs(Math.sin(step));
   time *= 0.001;
 
-  cube.rotation.x += controls.rotationSpeed;
+  Octahedron.rotation.x = time;
+  Octahedron.rotation.y = time;
+  // cube.rotation.x += controls.rotationSpeed;
   cube.rotation.y += controls.rotationSpeed;
 
   requestAnimationFrame(renderScene);
-  renderer.render(scene, camera)
+  renderer.render(scene, camera);
 
 }
 
